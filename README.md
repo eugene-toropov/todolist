@@ -1,0 +1,3 @@
+- Todolist App: приложение планировщика задач.
+- python3.9, Django, Postgres
+- Для установки зависимостей запустите команду "pip install -r requirements.txt"
