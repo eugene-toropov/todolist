@@ -26,7 +26,13 @@ services:
 
   api:
     image: ${DOCKER_USERNAME}/todolist:latest
-    env_file: .env
+    environment:
+      SECRET_KEY: ${SECRET_KEY}
+      DB_HOST: postgres
+      DB_PORT: 5432
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     depends_on:
       db:
         condition: service_healthy
