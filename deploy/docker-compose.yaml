@@ -28,7 +28,7 @@ services:
     image: ${DOCKER_USERNAME}/todolist:latest
     environment:
       SECRET_KEY: ${SECRET_KEY}
-      DB_HOST: postgres
+      DB_HOST: db
       DB_NAME: ${POSTGRES_DB}
       DB_USER: ${POSTGRES_USER}
       DB_PASSWORD: ${POSTGRES_PASSWORD}
