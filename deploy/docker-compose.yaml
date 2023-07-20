@@ -26,12 +26,7 @@ services:
 
   api:
     image: ${DOCKER_USERNAME}/todolist:latest
-    environment:
-      SECRET_KEY: django-insecure-tfbo!fdf67s6ffdv8ebgeb7reqb767rebbrm76knvage
-      DB_HOST: postgres
-      DB_NAME: postgres
-      DB_USER: postgres
-      DB_PASSWORD: postgres
+    env_file: .env
     depends_on:
       db:
         condition: service_healthy
