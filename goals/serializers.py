@@ -29,7 +29,7 @@ class GoalSerializer(serializers.ModelSerializer):
     def validate_category(self, value: GoalCategory):
         if value.is_deleted:
             raise NotFound('Category not exist!')
-        if self.context['request'].user_id != value.user_id:
+        if self.context['request'].user != value.user:
             raise PermissionDenied
         return value
 
@@ -49,7 +49,7 @@ class GoalCommentSerializer(serializers.ModelSerializer):
     def validate_goal(self, value: Goal):
         if value.status == Goal.Status.archived:
             raise NotFound('Goal not exist!')
-        if self.context['request'].user_id != value.user_id:
+        if self.context['request'].user != value.user:
             raise PermissionDenied
         return value
 

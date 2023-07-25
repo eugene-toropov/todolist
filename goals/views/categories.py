@@ -36,7 +36,7 @@ class CategoryListView(ListAPIView):
 class CategoryDetailView(RetrieveUpdateDestroyAPIView):
     model = GoalCategory
     serializer_class = GoalCategoryWithUserSerializer
-    permission_classes = GoalCategoryPermission
+    permission_classes = [GoalCategoryPermission]
 
     def get_queryset(self):
         return GoalCategory.objects.select_related('user').filter(is_deleted=False)
