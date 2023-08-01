@@ -42,8 +42,7 @@ services:
       - django_static:/app/static/
 
   frontend:
-    image: sermalenk/skypro-front:lesson-36
-    restart: on-failure
+    image: sermalenk/skypro-front:lesson-37
     ports:
       - "80:80"
     depends_on:

@@ -28,18 +28,14 @@ class CategoryListView(ListAPIView):
     search_fields = ["title"]
 
     def get_queryset(self):
-        return GoalCategory.objects.select_related('user').filter(
-            user=self.request.user, is_deleted=False
-        )
+        return GoalCategory.objects.filter(board__participants__user=self.request.user).exclude(is_deleted=True)
 
 
 class CategoryDetailView(RetrieveUpdateDestroyAPIView):
     model = GoalCategory
     serializer_class = GoalCategoryWithUserSerializer
     permission_classes = [GoalCategoryPermission]
-
-    def get_queryset(self):
-        return GoalCategory.objects.select_related('user').filter(is_deleted=False)
+    queryset = GoalCategory.objects.exclude(is_deleted=True)
 
     def perform_destroy(self, instance: GoalCategory):
         with transaction.atomic():
