@@ -33,6 +33,17 @@ services:
       run_migrations:
         condition: service_completed_successfully
 
+  bot:
+    image: ${DOCKER_USERNAME}/todolist:latest
+    env_file: .env
+    ports:
+      - "80:80"
+    depends_on:
+      db:
+        condition: service_healthy
+      run_migrations:
+        condition: service_completed_successfully
+    command: python manage.py runbot
 
   collect_static:
     image: ${DOCKER_USERNAME}/todolist:latest
@@ -42,7 +53,7 @@ services:
       - django_static:/app/static/
 
   frontend:
-    image: sermalenk/skypro-front:lesson-37
+    image: sermalenk/skypro-front:lesson-38
     ports:
       - "80:80"
     depends_on:

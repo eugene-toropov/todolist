@@ -45,6 +45,20 @@ services:
       - ./goals:/app/goals/
       - ./todolist:/app/todolist/
 
+  bot:
+    build: .
+    env_file: .env
+    environment:
+      POSTGRES_HOST: db
+    depends_on:
+      db:
+        condition: service_healthy
+      run_migrations:
+        condition: service_completed_successfully
+    volumes:
+      - ./bot:/app/bot/
+    command: python manage.py runbot
+
   collect_static:
     build: .
     env_file: .env
@@ -53,7 +67,7 @@ services:
       - django_static:/app/static/
 
   frontend:
-    image: sermalenk/skypro-front:lesson-37
+    image: sermalenk/skypro-front:lesson-38
     restart: on-failure
     ports:
       - "80:80"
