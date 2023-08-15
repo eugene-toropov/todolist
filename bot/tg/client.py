@@ -51,5 +51,6 @@ class TgClient:
     def __serialize_tg_response(serializer_class: Type[T], data: dict) -> T:
         try:
             return serializer_class(**data)
-        except ValidationError:
-            logger.error(f'Failed to serialize JSON response: {data}')
+        except ValidationError as e:
+            # logger.error(f'Failed to serialize JSON response: {data}')
+            print(e.json())

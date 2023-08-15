@@ -1,5 +1,3 @@
-from typing import Callable, Any
-
 from django.core.management import BaseCommand
 from django.db import IntegrityError
 
@@ -23,7 +21,7 @@ class Command(BaseCommand):
             res = self.tg_client.get_updates(offset=offset)
             for item in res.result:
                 offset = item.update_id + 1
-                self.handle_message(item.edited_message)
+                self.handle_message(item.message)
 
     def handle_message(self, message: Message):
         tg_user, _ = TgUser.objects.get_or_create(chat_id=message.chat.id, defaults={'username': message.chat.username})
@@ -34,8 +32,6 @@ class Command(BaseCommand):
             self.tg_client.send_message(message.chat.id, 'You already verified')
 
     def get_user_goals(self, user_id: int) -> str:
-        # priority = dict(Goal.Priority.choices)
-        # status = dict(Goal.Status.choices)
 
         goals = (
             Goal.objects.select_related('user')
@@ -56,14 +52,6 @@ class Command(BaseCommand):
                          'priority': item.priority,
                          'status': item.status}
             data.append(goal_data)
-
-            # filtered_dict = GoalData(
-            #     title=item['title'],
-            #     due_date=item['due_date'][:10] if item['due_date'] else '',
-            #     priority=priority[item['priority']],
-            #     status=status[item['status']],
-            # )
-            # data.append(filtered_dict)
 
         message = []
         for index, item in enumerate(data, start=1):
@@ -97,10 +85,6 @@ class Command(BaseCommand):
                 'cat_id': item.id,
                 'title': item.title}
             data.append(cat_data)
-
-        # for item in serializer.data:
-        #     category = CategoryData(cat_id=item['id'], title=item['title'])
-        #     data.append(category)
 
         users_data[chat_id] = {index: item['cat_id'] for index, item in enumerate(data, start=1)}
         users_data[chat_id]['next_handler'] = self.choose_category
