@@ -52,5 +52,5 @@ class TgClient:
         try:
             return serializer_class(**data)
         except ValidationError as e:
-            # logger.error(f'Failed to serialize JSON response: {data}')
-            print(e.json())
+            logger.error(f'Failed to serialize JSON response: {data}')
+            # print(e.json())

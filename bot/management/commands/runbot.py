@@ -1,3 +1,5 @@
+import json
+
 from django.core.management import BaseCommand
 from django.db import IntegrityError
 
@@ -29,9 +31,11 @@ class Command(BaseCommand):
             tg_user.update_verification_code()
             self.tg_client.send_message(message.chat.id, f'Verification code: {tg_user.verification_code}')
         else:
-            self.tg_client.send_message(message.chat.id, 'You already verified')
+            self.handle_auth_user(tg_user, message)
 
     def get_user_goals(self, user_id: int) -> str:
+        priority = dict(Goal.Priority.choices)
+        status = dict(Goal.Status.choices)
 
         goals = (
             Goal.objects.select_related('user')
@@ -47,10 +51,10 @@ class Command(BaseCommand):
 
         data = []
         for item in serializer.data:
-            goal_data = {'title': item.title,
-                         'due_date': item.due_date if item.due_date else '',
-                         'priority': item.priority,
-                         'status': item.status}
+            goal_data = {'title': item['title'],
+                         'due_date': item['due_date'] if item['due_date'] else '',
+                         'priority': priority[item['priority']],
+                         'status': status[item['status']]}
             data.append(goal_data)
 
         message = []
@@ -82,8 +86,8 @@ class Command(BaseCommand):
         data = []
         for item in serializer.data:
             cat_data = {
-                'cat_id': item.id,
-                'title': item.title}
+                'cat_id': item['id'],
+                'title': item['title']}
             data.append(cat_data)
 
         users_data[chat_id] = {index: item['cat_id'] for index, item in enumerate(data, start=1)}
@@ -133,10 +137,10 @@ class Command(BaseCommand):
                 case '/create':
                     text = self.show_categories(user_id=tg_user.user.id, chat_id=message.chat.id,
                                                 users_data=self.users_data)
-                case '/cancel':
-                    if self.users_data[message.chat.id]:
-                        del self.users_data[message.chat.id]
-                    text = 'Creation cancelled'
+                # case '/cancel':
+                #     if self.users_data[message.chat.id]:
+                #         self.users_data.pop(message.chat.id)
+                #     text = 'Creation cancelled'
                 case _:
                     text = 'Unknown command'
         elif message.chat.id in self.users_data:
@@ -145,5 +149,5 @@ class Command(BaseCommand):
                 user_id=tg_user.user.id, chat_id=message.chat.id, message=message.text, users_data=self.users_data
             )
         else:
-            text = 'List of commands:\n/goals - Show your goals\n' '/create - Create a goal\n/cancel - Cancel to create'
+            text = 'List of commands:\n/goals - Show your goals\n' '/create - Create a goal'
         self.tg_client.send_message(chat_id=message.chat.id, text=text)

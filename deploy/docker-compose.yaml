@@ -36,8 +36,9 @@ services:
   bot:
     image: ${DOCKER_USERNAME}/todolist:latest
     env_file: .env
-    ports:
-      - "80:80"
+    environment:
+      DB_HOST: postgres
+    dns: 8.8.8.8
     depends_on:
       db:
         condition: service_healthy
