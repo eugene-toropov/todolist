@@ -19,13 +19,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'drf_spectacular',
     'rest_framework',
     'django_filters',
     'social_django',
     'core',
     'goals',
     'bot',
-    'drf_spectacular',
+
 ]
 
 REST_FRAMEWORK = {
