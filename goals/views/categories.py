@@ -9,12 +9,18 @@ from goals.serializers import GoalCategorySerializer, GoalCategoryWithUserSerial
 
 
 class CategoryCreateView(CreateAPIView):
+    """
+    Представление создания категории.
+    """
     model = GoalCategory
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = GoalCategorySerializer
 
 
 class CategoryListView(ListAPIView):
+    """
+    Представление списка категорий.
+    """
     model = GoalCategory
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = GoalCategoryWithUserSerializer
@@ -32,8 +38,12 @@ class CategoryListView(ListAPIView):
 
 
 class CategoryDetailView(RetrieveUpdateDestroyAPIView):
+    """
+    Представление одной категории.
+    """
     model = GoalCategory
     serializer_class = GoalCategoryWithUserSerializer
+    pagination_class = LimitOffsetPagination
     permission_classes = [GoalCategoryPermission]
     queryset = GoalCategory.objects.exclude(is_deleted=True)
 

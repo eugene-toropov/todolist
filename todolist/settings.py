@@ -25,7 +25,14 @@ INSTALLED_APPS = [
     'core',
     'goals',
     'bot',
+    'drf_spectacular',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -141,3 +148,10 @@ LOGGING = {
 }
 
 BOT_TOKEN = env('BOT_TOKEN')
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'ToDoList API',
+    'DESCRIPTION': 'REST API for ToDoList app.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}

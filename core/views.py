@@ -9,11 +9,17 @@ from core.serializers import CreateUserSerializer, LoginSerializer, UserSerializ
 
 
 class SignUpView(generics.CreateAPIView):
+    """
+    Представления регистрации пользователя.
+    """
     serializer_class = CreateUserSerializer
     permission_classes = [AllowAny]
 
 
 class LoginView(GenericAPIView):
+    """
+    Представление входа пользователя.
+    """
     serializer_class = LoginSerializer
 
     def post(self, request):
@@ -29,6 +35,9 @@ class LoginView(GenericAPIView):
 
 
 class ProfileView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Представление профиля пользователя.
+    """
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -40,6 +49,9 @@ class ProfileView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class UpdatePasswordView(generics.GenericAPIView):
+    """"
+    Представление обновления пароля пользователя.
+    """
     serializer_class = UpdatePasswordSerializer
     permission_classes = [permissions.IsAuthenticated]
 

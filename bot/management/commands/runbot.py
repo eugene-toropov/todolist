@@ -26,6 +26,11 @@ class Command(BaseCommand):
                 self.handle_message(item.message)
 
     def handle_message(self, message: Message):
+        """
+        Обработчик сообщений от телеграмм пользователя.
+
+        :param message: Объект message.
+        """
         tg_user, _ = TgUser.objects.get_or_create(chat_id=message.chat.id, defaults={'username': message.chat.username})
         if not tg_user.is_verified:
             tg_user.update_verification_code()
@@ -34,6 +39,12 @@ class Command(BaseCommand):
             self.handle_auth_user(tg_user, message)
 
     def get_user_goals(self, user_id: int) -> str:
+        """
+        Обработчик команды /goals.
+
+        :param user_id:
+        :return: Список целей пользователя.
+        """
         priority = dict(Goal.Priority.choices)
         status = dict(Goal.Status.choices)
 
@@ -69,6 +80,14 @@ class Command(BaseCommand):
         return response
 
     def show_categories(self, user_id: int, chat_id: int, users_data) -> str:
+        """
+        Возвращаем список категорий, в которых пользователь либо владелец, либо редактор.
+
+        :param user_id:
+        :param chat_id:
+        :param users_data:
+        :return:
+        """
         categories = (
             GoalCategory.objects.select_related('user')
             .filter(
@@ -90,6 +109,7 @@ class Command(BaseCommand):
                 'title': item['title']}
             data.append(cat_data)
 
+        # Присваиваем численное значение к каждой категории для удобства дальнейшего выбора
         users_data[chat_id] = {index: item['cat_id'] for index, item in enumerate(data, start=1)}
         users_data[chat_id]['next_handler'] = self.choose_category
 
@@ -99,6 +119,12 @@ class Command(BaseCommand):
         return 'Choose category for goal:\n' + response
 
     def choose_category(self, **kwargs) -> str:
+        """
+        Принимаем от пользователя category_id и помещаем его в словарь users_data.
+
+        :param kwargs:
+        :return:
+        """
         chat_id: int = kwargs.get('chat_id')
         message: str = kwargs.get('message')
         users_data: dict[int, dict[str | int, ...]] = kwargs.get('users_data')
@@ -115,6 +141,12 @@ class Command(BaseCommand):
             return f'You sent not valid category index.'
 
     def create_goal(self, **kwargs) -> str:
+        """
+        Принимаем от пользователя название цели и создаем ее на основе параметров.
+
+        :param kwargs:
+        :return:
+        """
         user_id: int = kwargs.get('user_id')
         chat_id: int = kwargs.get('chat_id')
         message: str = kwargs.get('message')
@@ -130,6 +162,13 @@ class Command(BaseCommand):
             return f'Error: {str(e)}'
 
     def handle_auth_user(self, tg_user: TgUser, message: Message) -> None:
+        """
+        Обработчик команд от пользователя. Принимает команду и вызывает соответствующую функцию.
+
+        :param tg_user:
+        :param message:
+        :return:
+        """
         if message.text.startswith('/'):
             match message.text:
                 case '/goals':
@@ -137,10 +176,6 @@ class Command(BaseCommand):
                 case '/create':
                     text = self.show_categories(user_id=tg_user.user.id, chat_id=message.chat.id,
                                                 users_data=self.users_data)
-                # case '/cancel':
-                #     if self.users_data[message.chat.id]:
-                #         self.users_data.pop(message.chat.id)
-                #     text = 'Creation cancelled'
                 case _:
                     text = 'Unknown command'
         elif message.chat.id in self.users_data:

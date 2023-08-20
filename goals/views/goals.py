@@ -10,11 +10,17 @@ from goals.serializers import GoalSerializer, GoalWithUserSerializer
 
 
 class GoalCreateView(CreateAPIView):
+    """
+    Представление создания цели.
+    """
     serializer_class = GoalSerializer
     permission_classes = [permissions.IsAuthenticated]
 
 
 class GoalListView(ListAPIView):
+    """
+    Представление списка целей.
+    """
     serializer_class = GoalWithUserSerializer
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = LimitOffsetPagination
@@ -30,6 +36,9 @@ class GoalListView(ListAPIView):
 
 
 class GoalDetailView(RetrieveUpdateDestroyAPIView):
+    """
+    Представление одной цели.
+    """
     permission_classes = [GoalPermission]
     serializer_class = GoalWithUserSerializer
     queryset = Goal.objects.exclude(status=Goal.Status.archived)

@@ -19,12 +19,14 @@ class TgClient:
         self.__url = f'https://api.telegram.org/bot{self.__token}/'
 
     def __get_url(self, method: str) -> str:
+        """
+        Метод обработки url-адреса.
+        :param method: Метод.
+        :return: url-адрес на основе метода.
+        """
         return f'{self.__url}{method}'
 
-    def get_updates(self, offset: int = 0, timeout: int = 60, **kwargs) -> GetUpdatesResponse:
-        # data = self._get('getUpdates', offset=offset, timeout=timeout, **kwargs)
-        # return self.__serialize_tg_response(GetUpdatesResponse, data)
-
+    def get_updates(self, offset: int = 0, timeout: int = 60) -> GetUpdatesResponse:
         url = self.__get_url('getUpdates')
         response = requests.get(url, params={'timeout': timeout, 'offset': offset, 'allowed_updates': ['message']})
 
@@ -35,6 +37,13 @@ class TgClient:
             logger.error(f'Bad request getUpdates, ', response.status_code)
 
     def send_message(self, chat_id: int, text: str, **kwargs) -> SendMessageResponse:
+        """
+        Метод отправления сообщения пользователю при помощи сериализатора.
+        :param chat_id:
+        :param text:
+        :param kwargs:
+        :return:
+        """
         data = self._get('sendMessage', chat_id=chat_id, text=text, **kwargs)
         return self.__serialize_tg_response(SendMessageResponse, data)
 
@@ -51,6 +60,5 @@ class TgClient:
     def __serialize_tg_response(serializer_class: Type[T], data: dict) -> T:
         try:
             return serializer_class(**data)
-        except ValidationError as e:
+        except ValidationError:
             logger.error(f'Failed to serialize JSON response: {data}')
-            # print(e.json())

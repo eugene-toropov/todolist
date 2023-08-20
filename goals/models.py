@@ -5,6 +5,10 @@ from todolist.models import BaseModel
 
 
 class Board(BaseModel):
+    """
+    Модель объекта доски.
+    Поля: title, is_deleted.
+    """
     title = models.CharField(verbose_name="Название", max_length=255)
     is_deleted = models.BooleanField(verbose_name="Удалена", default=False)
 
@@ -14,7 +18,14 @@ class Board(BaseModel):
 
 
 class BoardParticipant(BaseModel):
+    """
+    Модель объекта доски с пользователями.
+    Поля: board, user(поле связанное с моделью User), role.
+    """
     class Role(models.IntegerChoices):
+        """
+        Класс возможных ролей пользователя.
+        """
         owner = 1, "Владелец"
         writer = 2, "Редактор"
         reader = 3, "Читатель"
@@ -32,6 +43,10 @@ class BoardParticipant(BaseModel):
 
 
 class GoalCategory(BaseModel):
+    """
+    Модель объекта категория цели.
+    Поля: board(поле связанное с моделью Board), title, user(поле связанное с моделью User), is_deleted.
+    """
     board = models.ForeignKey(Board, verbose_name="Доска", on_delete=models.PROTECT, related_name="categories")
     title = models.CharField(verbose_name="Название", max_length=255)
     user = models.ForeignKey(User, verbose_name="Автор", on_delete=models.PROTECT)
@@ -43,13 +58,24 @@ class GoalCategory(BaseModel):
 
 
 class Goal(BaseModel):
+    """
+    Модель объекта цель.
+    Поля: title, description, category(поле связанное с моделью GoalCategory), due_date,
+    user(поле связанное с моделью User), status, priority
+    """
     class Status(models.IntegerChoices):
+        """
+        Класс статуса цели на выбор.
+        """
         to_do = 1, "К выполнению"
         in_progress = 2, "В процессе"
         done = 3, "Выполнено"
         archived = 4, "Архив"
 
     class Priority(models.IntegerChoices):
+        """
+        Класс приоритета цели на выбор.
+        """
         low = 1, "Низкий"
         medium = 2, "Средний"
         high = 3, "Высокий"
@@ -69,6 +95,10 @@ class Goal(BaseModel):
 
 
 class GoalComment(BaseModel):
+    """
+    Модель обеъкта комментарий к цели.
+    Поля: user(поле связанное с моделью User), goal(поле связанное с моделью Goal), text.
+    """
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     goal = models.ForeignKey(Goal, on_delete=models.PROTECT)
     text = models.TextField()

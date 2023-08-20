@@ -8,6 +8,13 @@ from goals.models import GoalCategory, Goal, GoalComment, Board, BoardParticipan
 
 class BoardPermission(IsAuthenticated):
     def has_object_permission(self, request: Request, view: GenericAPIView, obj: Board) -> bool:
+        """
+        Метод проверки доступа к доске.
+        :param request:
+        :param view:
+        :param obj:
+        :return:
+        """
         if not request.user.is_authenticated:
             return False
         if request.method in permissions.SAFE_METHODS:
@@ -17,6 +24,13 @@ class BoardPermission(IsAuthenticated):
 
 class GoalCategoryPermission(IsAuthenticated):
     def has_object_permission(self, request: Request, view: GenericAPIView, obj: GoalCategory) -> bool:
+        """
+        Метод проверки доступа к категории цели.
+        :param request:
+        :param view:
+        :param obj:
+        :return:
+        """
         if not request.user.is_authenticated:
             return False
         if request.method in permissions.SAFE_METHODS:
@@ -28,6 +42,13 @@ class GoalCategoryPermission(IsAuthenticated):
 
 class GoalPermission(IsAuthenticated):
     def has_object_permission(self, request: Request, view: GenericAPIView, obj: Goal) -> bool:
+        """
+        Метод проверки доступа к цели.
+        :param request:
+        :param view:
+        :param obj:
+        :return:
+        """
         if not request.user.is_authenticated:
             return False
         if request.method in permissions.SAFE_METHODS:
@@ -41,6 +62,13 @@ class GoalPermission(IsAuthenticated):
 
 class GoalCommentPermission(IsAuthenticated):
     def has_object_permission(self, request: Request, view: GenericAPIView, obj: GoalComment) -> bool:
+        """
+        Метод проверки доступа к цели.
+        :param request:
+        :param view:
+        :param obj:
+        :return:
+        """
         if not request.user.is_authenticated:
             return False
         if request.method in permissions.SAFE_METHODS:
